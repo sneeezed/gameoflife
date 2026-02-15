@@ -15,10 +15,12 @@ rows = screen_height // block_size  # 80
 
 
 screen = pygame.display.set_mode((screen_width, screen_height))
+clock = pygame.time.Clock()
+
 
 twoD = [[False] * cols for i in range (rows)]
 
-for i in range(50):
+for i in range(500):
     r = random.randint(0, rows - 1)
     c = random.randint(0, cols - 1)
     twoD[r][c] = True
@@ -57,17 +59,17 @@ while True:
                 # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
                 if twoD[i][j] == False:
                     if Amount_of_alive == 3: 
-                        twoD[i][j] == True
+                        twoD[i][j] = True
                 else:
                 # Any live cell with more than three live neighbours dies, as if by overpopulation.
                     if Amount_of_alive > 3:
-                        twoD[i][j] == False
+                        twoD[i][j] = False
                 # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
                     if Amount_of_alive < 2:
-                        twoD[i][j] == False
+                        twoD[i][j] = False
                 # Any live cell with two or three live neighbours lives on to the next generation.
                     if Amount_of_alive == 3 or Amount_of_alive == 2:
-                        twoD[i][j] == True
+                        twoD[i][j] = True
                         #this doesnt really do anything since it was already true but its calm
                 
 
@@ -75,20 +77,21 @@ while True:
         
 
         #SEPRATE SECTION FOR DRAWING 
-        for i in range(rows):
-            for j in range(cols):
-                if twoD[i][j] == True:
-                    pygame.draw.rect(
-                        screen,
-                        (0, 0, 0),
-                        (j * block_size, i * block_size, block_size, block_size)
-                    )  
-                else: 
-                    pygame.draw.rect(
-                        screen,
-                        (255, 255, 255),
-                        (j * block_size, i * block_size, block_size, block_size)
-                    )  
+    for i in range(rows):
+        for j in range(cols):
+            if twoD[i][j] == True:
+                pygame.draw.rect(
+                    screen,
+                    (0, 0, 0),
+                    (j * block_size, i * block_size, block_size, block_size)
+                )  
+            else: 
+                pygame.draw.rect(
+                    screen,
+                    (255, 255, 255),
+                    (j * block_size, i * block_size, block_size, block_size)
+                )  
 
     pygame.display.flip()
+    clock.tick(10)
 
