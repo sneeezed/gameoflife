@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 
 pygame.init()
 
@@ -17,7 +18,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 twoD = [[False] * cols for i in range (rows)]
 
-for i in range(1000):
+for i in range(50):
     r = random.randint(0, rows - 1)
     c = random.randint(0, cols - 1)
     twoD[r][c] = True
@@ -33,22 +34,44 @@ while True:
     #SECTION FOR CHECKING THE BLOCKS AND UPDATING INSIDE OF THE ARRAY
     for i in range(rows):
         for j in range(cols):
-            # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            # Checking if amount neighboors are live
+            Amount_of_alive = 0
+            if 0 < j < cols - 1:
+                if 0 < i < rows - 1:
+                    if twoD[i+1][j] == True:
+                        Amount_of_alive += 1
+                    if twoD[i-1][j] == True:
+                        Amount_of_alive += 1
+                    if twoD[i][j+1] == True:
+                        Amount_of_alive += 1
+                    if twoD[i][j-1] == True:
+                        Amount_of_alive += 1
+                    if twoD[i+1][j+1] == True:
+                        Amount_of_alive += 1
+                    if twoD[i+1][j-1] == True:
+                        Amount_of_alive += 1
+                    if twoD[i-1][j+1] == True:
+                        Amount_of_alive += 1
+                    if twoD[i-1][j-1] == True:
+                        Amount_of_alive += 1
+                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+                if twoD[i][j] == False:
+                    if Amount_of_alive == 3: 
+                        twoD[i][j] == True
+                else:
+                # Any live cell with more than three live neighbours dies, as if by overpopulation.
+                    if Amount_of_alive > 3:
+                        twoD[i][j] == False
+                # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+                    if Amount_of_alive < 2:
+                        twoD[i][j] == False
+                # Any live cell with two or three live neighbours lives on to the next generation.
+                    if Amount_of_alive == 3 or Amount_of_alive == 2:
+                        twoD[i][j] == True
+                        #this doesnt really do anything since it was already true but its calm
+                
 
-            if twoD[i][j] == False:
-                Amount_of_alive = 0
-                if 0 < j < cols - 1:
-                    if 0 < i < rows - 1:
-                        if twoD[i+1][j] == True:
-                            Amount_of_alive += 1
-                        if twoD[i-1][j] == True:
-                            Amount_of_alive += 1
-                        if twoD[i][j+1] == True:
-                            Amount_of_alive += 1
-                        if twoD[i][j-1] == True:
-                            Amount_of_alive += 1
-                if Amount_of_alive == 3: 
-                    twoD[i][j] == True
+
         
 
         #SEPRATE SECTION FOR DRAWING 
@@ -66,29 +89,6 @@ while True:
                         (255, 255, 255),
                         (j * block_size, i * block_size, block_size, block_size)
                     )  
-                            
-
-
-
-
-
-
-            
-
-
-
-    
-    
-
-
-# Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-    #this will mean checking for every combo of j+1, j-1, i+1, i-1 tg
-
-
-# Any live cell with two or three live neighbours lives on to the next generation.
-# Any live cell with more than three live neighbours dies, as if by overpopulation.
-# Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-
 
     pygame.display.flip()
 
