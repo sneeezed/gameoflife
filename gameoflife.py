@@ -4,8 +4,6 @@ import random
 
 pygame.init()
 
-
-
 block_size = 5
 
 screen_width = 600
@@ -19,7 +17,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 twoD = [[False] * cols for i in range (rows)]
 
-for i in range(100):
+for i in range(1000):
     r = random.randint(0, rows - 1)
     c = random.randint(0, cols - 1)
     twoD[r][c] = True
@@ -31,32 +29,49 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
-    screen.fill((255, 255, 255))
-
-    #making the blocks black when they are alive (true) and not editing (when they are white), this only happens once so i will have to update
+            
+    #SECTION FOR CHECKING THE BLOCKS AND UPDATING INSIDE OF THE ARRAY
     for i in range(rows):
         for j in range(cols):
-            if twoD[i][j] == True:
-                pygame.draw.rect(
-                    screen,
-                    (0, 0, 0),
-                    (j * block_size, i * block_size, block_size, block_size)
-                )
+            # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+            if twoD[i][j] == False:
+                Amount_of_alive = 0
                 if 0 < j < cols - 1:
-                    if twoD[i][j+1] == False:
-                        pygame.draw.rect(
-                          screen,
-                          (255, 255, 0),
-                          ((j+1) * block_size, (i) * block_size, block_size, block_size)
-                        )
-                    
-                    if twoD[i][j-1] == False:
-                        pygame.draw.rect(
-                          screen,
-                          (255, 255, 0),
-                          ((j-1) * block_size, (i) * block_size, block_size, block_size)
-                        )
+                    if 0 < i < rows - 1:
+                        if twoD[i+1][j] == True:
+                            Amount_of_alive += 1
+                        if twoD[i-1][j] == True:
+                            Amount_of_alive += 1
+                        if twoD[i][j+1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i][j-1] == True:
+                            Amount_of_alive += 1
+                if Amount_of_alive == 3: 
+                    twoD[i][j] == True
+        
+
+        #SEPRATE SECTION FOR DRAWING 
+        for i in range(rows):
+            for j in range(cols):
+                if twoD[i][j] == True:
+                    pygame.draw.rect(
+                        screen,
+                        (0, 0, 0),
+                        (j * block_size, i * block_size, block_size, block_size)
+                    )  
+                else: 
+                    pygame.draw.rect(
+                        screen,
+                        (255, 255, 255),
+                        (j * block_size, i * block_size, block_size, block_size)
+                    )  
+                            
+
+
+
+
+
 
             
 
