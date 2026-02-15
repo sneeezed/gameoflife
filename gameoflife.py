@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 
 twoD = [[False] * cols for i in range (rows)]
 
-for i in range(500):
+for i in range(700):
     r = random.randint(0, rows - 1)
     c = random.randint(0, cols - 1)
     twoD[r][c] = True
@@ -33,6 +33,9 @@ while True:
             pygame.quit()
             sys.exit()
             
+    
+    new_grid = [[False] * cols for i in range(rows)]
+
     #SECTION FOR CHECKING THE BLOCKS AND UPDATING INSIDE OF THE ARRAY
     for i in range(rows):
         for j in range(cols):
@@ -56,23 +59,25 @@ while True:
                         Amount_of_alive += 1
                     if twoD[i-1][j-1] == True:
                         Amount_of_alive += 1
+                
+                new_grid[i][j] = twoD[i][j]
                 # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
                 if twoD[i][j] == False:
                     if Amount_of_alive == 3: 
-                        twoD[i][j] = True
+                        new_grid[i][j] = True
                 else:
                 # Any live cell with more than three live neighbours dies, as if by overpopulation.
                     if Amount_of_alive > 3:
-                        twoD[i][j] = False
+                        new_grid[i][j] = False
                 # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
                     if Amount_of_alive < 2:
-                        twoD[i][j] = False
+                        new_grid[i][j] = False
                 # Any live cell with two or three live neighbours lives on to the next generation.
                     if Amount_of_alive == 3 or Amount_of_alive == 2:
-                        twoD[i][j] = True
+                        new_grid[i][j] = True
                         #this doesnt really do anything since it was already true but its calm
+    twoD = new_grid
                 
-
 
         
 
