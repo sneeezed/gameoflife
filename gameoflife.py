@@ -17,13 +17,9 @@ rows = screen_height // block_size  # 80
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
-
 twoD = [[False] * cols for i in range (rows)]
 
-for i in range(700):
-    r = random.randint(0, rows - 1)
-    c = random.randint(0, cols - 1)
-    twoD[r][c] = True
+drawing = True
 
 #turn everything into a comment with comand /
 
@@ -32,51 +28,72 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                drawing = False
             
-    
+    if drawing == True:
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0] or mouse_buttons[2]:
+            mx, my = pygame.mouse.get_pos()  #lines 47-41 i used chatgpt to understand how drawing works with pygame
+            j = mx // block_size 
+            i = my // block_size
+            if 0 <= i < rows and 0 <= j < cols:
+                if mouse_buttons[0]:      
+                    twoD[i][j] = True
+                elif mouse_buttons[2]:    
+                    twoD[i][j] = False
+
+
+
     new_grid = [[False] * cols for i in range(rows)]
 
+
+
+
     #SECTION FOR CHECKING THE BLOCKS AND UPDATING INSIDE OF THE ARRAY
-    for i in range(rows):
-        for j in range(cols):
-            # Checking if amount neighboors are live
-            Amount_of_alive = 0
-            if 0 < j < cols - 1:
-                if 0 < i < rows - 1:
-                    if twoD[i+1][j] == True:
-                        Amount_of_alive += 1
-                    if twoD[i-1][j] == True:
-                        Amount_of_alive += 1
-                    if twoD[i][j+1] == True:
-                        Amount_of_alive += 1
-                    if twoD[i][j-1] == True:
-                        Amount_of_alive += 1
-                    if twoD[i+1][j+1] == True:
-                        Amount_of_alive += 1
-                    if twoD[i+1][j-1] == True:
-                        Amount_of_alive += 1
-                    if twoD[i-1][j+1] == True:
-                        Amount_of_alive += 1
-                    if twoD[i-1][j-1] == True:
-                        Amount_of_alive += 1
-                
-                new_grid[i][j] = twoD[i][j]
-                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-                if twoD[i][j] == False:
-                    if Amount_of_alive == 3: 
-                        new_grid[i][j] = True
-                else:
-                # Any live cell with more than three live neighbours dies, as if by overpopulation.
-                    if Amount_of_alive > 3:
-                        new_grid[i][j] = False
-                # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-                    if Amount_of_alive < 2:
-                        new_grid[i][j] = False
-                # Any live cell with two or three live neighbours lives on to the next generation.
-                    if Amount_of_alive == 3 or Amount_of_alive == 2:
-                        new_grid[i][j] = True
-                        #this doesnt really do anything since it was already true but its calm
-    twoD = new_grid
+    if drawing == False:
+        for i in range(rows):
+            for j in range(cols):
+                # Checking if amount neighboors are live
+                Amount_of_alive = 0
+                if 0 < j < cols - 1:
+                    if 0 < i < rows - 1:
+                        if twoD[i+1][j] == True:
+                            Amount_of_alive += 1
+                        if twoD[i-1][j] == True:
+                            Amount_of_alive += 1
+                        if twoD[i][j+1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i][j-1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i+1][j+1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i+1][j-1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i-1][j+1] == True:
+                            Amount_of_alive += 1
+                        if twoD[i-1][j-1] == True:
+                            Amount_of_alive += 1
+                    
+                    new_grid[i][j] = twoD[i][j]
+                    # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+                    if twoD[i][j] == False:
+                        if Amount_of_alive == 3: 
+                            new_grid[i][j] = True
+                    else:
+                    # Any live cell with more than three live neighbours dies, as if by overpopulation.
+                        if Amount_of_alive > 3:
+                            new_grid[i][j] = False
+                    # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+                        if Amount_of_alive < 2:
+                            new_grid[i][j] = False
+                    # Any live cell with two or three live neighbours lives on to the next generation.
+                        if Amount_of_alive == 3 or Amount_of_alive == 2:
+                            new_grid[i][j] = True
+                            #this doesnt really do anything since it was already true but its calm
+        twoD = new_grid
                 
 
         
@@ -98,5 +115,6 @@ while True:
                 )  
 
     pygame.display.flip()
-    clock.tick(10)
+    if drawing == False:
+        clock.tick(10)
 
