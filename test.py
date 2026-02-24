@@ -1,9 +1,8 @@
 
-testdict = {"x": 1}
-print(testdict["x"])
+testdict = {"x": 1, "y" : 2}
 
-testdict.pop("x")
 
-print(testdict)
+
+print(testdict.keys())
 
 
