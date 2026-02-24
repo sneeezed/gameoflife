@@ -10,19 +10,36 @@ screen_height = 400
 
 
 screen = pygame.display.set_mode((screen_width, screen_height))
+clock = pygame.time.Clock()
 
 
 # x and y cordinate pairs as tup and then just true, which idk if rudundant
-aliveMap = {(0, 1): True, (1, 1): True, (2, 2): True}
+aliveMap = {}
 drawing = True
+
+def CheckAmountAlive(x, y, aliveMap):
+    amount_alive = 0
+    if (x+1, y) in aliveMap:
+        amount_alive +=1
+    if (x+1, y+1) in aliveMap:
+        amount_alive +=1
+    if (x+1, y-1) in aliveMap:
+        amount_alive +=1
+    if (x, y-1) in aliveMap:
+        amount_alive +=1
+    if (x, y+1) in aliveMap:
+        amount_alive +=1
+    if (x-1, y+1) in aliveMap:
+        amount_alive +=1
+    if (x-1, y-1) in aliveMap:
+        amount_alive +=1
+    if (x-1, y) in aliveMap:
+        amount_alive +=1
+    return amount_alive
 
 while True:
 
-    pygame.draw.rect(
-                        screen,
-                        (255, 0, 0),
-                        (0, 0, 600, 400)
-                    )  
+    screen.fill((0, 0, 0))
 
     newMap = {}
     for event in pygame.event.get():
@@ -45,40 +62,53 @@ while True:
             elif mouse_buttons[2]:    
                 aliveMap[(x, y)] = True
 
-#first check how many are alive, using the cordinate look up with n(1) i think itll be fast
     else:
         for x, y in aliveMap.keys():
-            amount_alive = 0
-            if (x+1, y) in aliveMap:
-                amount_alive +=1
-            if (x+1, y+1) in aliveMap: # i have to check the runtime complexity of this, because if its n(n), its not better than the 2d array
-                amount_alive +=1
-            if (x+1, y-1) in aliveMap:
-                amount_alive +=1
-            if (x, y-1) in aliveMap:
-                amount_alive +=1
-            if (x, y+1) in aliveMap:
-                amount_alive +=1
-            if (x, y) in aliveMap:
-                amount_alive +=1
-            if (x-1, y+1) in aliveMap:
-                amount_alive +=1
-            if (x-1, y-1) in aliveMap:
-                amount_alive +=1
-            if (x-1, y) in aliveMap:
-                amount_alive +=1
-            
             newMap[(x, y)] = aliveMap[(x, y)]
-    # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.    
 
-    # Any live cell with more than three live neighbours dies, as if by overpopulation.
+            amount_alive = CheckAmountAlive(x, y, aliveMap)
+            # Any live cell with more than three live neighbours dies, as if by overpopulation.
             if amount_alive > 3:
                 newMap.pop((x, y))
-                print("DEAD")
-    # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+            # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
             if amount_alive < 2:
                 newMap.pop((x, y))
-                print("DEAD")
+
+
+    # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.   
+            amount_around_dead_thats_alive = CheckAmountAlive(x+1, y, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x+1, y] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x-1, y, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x-1, y] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x, y-1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x, y-1] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x+1, y-1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x+1, y-1] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x-1, y-1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x-1, y-1] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x, y+1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x, y+1] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x+1, y+1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x+1, y+1] = True
+
+            amount_around_dead_thats_alive = CheckAmountAlive(x-1, y+1, aliveMap)
+            if amount_around_dead_thats_alive == 3:
+                newMap[x-1, y+1] = True
+
+
     # Any live cell with two or three live neighbours lives on to the next generation.
         #dont really gotta do anything for this condtional
         aliveMap = newMap
@@ -92,3 +122,5 @@ while True:
 
     
     pygame.display.flip()
+    if drawing == False:
+        clock.tick(10)
