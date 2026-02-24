@@ -4,10 +4,10 @@ import time
 
 pygame.init()
 
-block_size = 10
+block_size = 1
 screen_width = 1200
 screen_height = 800
-zoom = 1
+zoom = 10
 
 
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -17,6 +17,9 @@ clock = pygame.time.Clock()
 # x and y cordinate pairs as tup and then just true, which idk if rudundant
 aliveMap = {}
 drawing = True
+
+camera_x = 0
+camera_y = 0
 
 def CheckAmountAlive(x, y, aliveMap):
     amount_alive = 0
@@ -53,29 +56,37 @@ while True:
             if event.key == pygame.K_RETURN:
                 drawing = False
 
-            if event.key == pygame.K_1:
+            if event.key == pygame.K_EQUALS:
                 zoom+=1
-            if event.key == pygame.K_2:
+            if event.key == pygame.K_MINUS:
                 if zoom > 1:
                     zoom -= 1
+
             if event.key == pygame.K_r:
                 drawing = True
                 aliveMap = {}
+            if event.key == pygame.K_w:
+                camera_y += (1 * zoom)
+            if event.key == pygame.K_s:
+                camera_y -= (1 * zoom)
+            if event.key == pygame.K_a:
+                camera_x -= (1 * zoom)
+            if event.key == pygame.K_d:
+                camera_x += (1 * zoom)
+
                     
-
-
-            
-
     if drawing == True:
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0] or mouse_buttons[2]:
-            mx, my = pygame.mouse.get_pos()  #lines 47-41 i used chatgpt to understand how drawing works with pygame
-            x = mx // block_size 
-            y = my // block_size
-            if mouse_buttons[0]:      
+            mx, my = pygame.mouse.get_pos()
+
+            x = camera_x + (mx // (block_size * zoom))
+            y = (my // (block_size * zoom)) - camera_y
+
+            if mouse_buttons[0]:
                 aliveMap[(x, y)] = True
             elif mouse_buttons[2]:
-                if (x,y) in aliveMap:  
+                if (x, y) in aliveMap:
                     aliveMap.pop((x, y))
 
     else:
@@ -130,10 +141,13 @@ while True:
         aliveMap = newMap
 
     for x, y in aliveMap.keys():
+            screen_x = (x - camera_x) *  block_size * zoom
+            screen_y = (y + camera_y) *  block_size* zoom
+
             pygame.draw.rect(
                     screen,
                     (255, 255, 255),
-                    (x * block_size * zoom, y * block_size* zoom, block_size* zoom, block_size* zoom)
+                    (screen_x, screen_y, block_size* zoom, block_size* zoom)
                 )  
 
     
