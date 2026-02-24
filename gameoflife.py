@@ -24,6 +24,8 @@ drawing = True
 #turn everything into a comment with comand /
 
 while True:
+    starttime = time.time()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -115,6 +117,7 @@ while True:
                 )  
 
     pygame.display.flip()
+    #print(time.time() - starttime)
     if drawing == False:
         clock.tick(10)
 

@@ -4,9 +4,10 @@ import time
 
 pygame.init()
 
-block_size = 5
-screen_width = 600
-screen_height = 400
+block_size = 10
+screen_width = 1200
+screen_height = 800
+zoom = 1
 
 
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -38,6 +39,7 @@ def CheckAmountAlive(x, y, aliveMap):
     return amount_alive
 
 while True:
+    starttime = time.time()
 
     screen.fill((0, 0, 0))
 
@@ -51,6 +53,19 @@ while True:
             if event.key == pygame.K_RETURN:
                 drawing = False
 
+            if event.key == pygame.K_1:
+                zoom+=1
+            if event.key == pygame.K_2:
+                if zoom > 1:
+                    zoom -= 1
+            if event.key == pygame.K_r:
+                drawing = True
+                aliveMap = {}
+                    
+
+
+            
+
     if drawing == True:
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0] or mouse_buttons[2]:
@@ -59,8 +74,9 @@ while True:
             y = my // block_size
             if mouse_buttons[0]:      
                 aliveMap[(x, y)] = True
-            elif mouse_buttons[2]:    
-                aliveMap[(x, y)] = True
+            elif mouse_buttons[2]:
+                if (x,y) in aliveMap:  
+                    aliveMap.pop((x, y))
 
     else:
         for x, y in aliveMap.keys():
@@ -117,10 +133,12 @@ while True:
             pygame.draw.rect(
                     screen,
                     (255, 255, 255),
-                    (x * block_size, y * block_size, block_size, block_size)
+                    (x * block_size * zoom, y * block_size* zoom, block_size* zoom, block_size* zoom)
                 )  
 
     
     pygame.display.flip()
+    #print(time.time() - starttime)
     if drawing == False:
-        clock.tick(10)
+        clock.tick(9)
+
