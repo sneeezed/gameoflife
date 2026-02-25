@@ -8,6 +8,8 @@ block_size = 1
 screen_width = 1200
 screen_height = 800
 zoom = 10
+world_center_x = screen_width // 2
+world_center_y = screen_height // 2
 
 
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -57,10 +59,22 @@ while True:
                 drawing = False
 
             if event.key == pygame.K_EQUALS:
-                zoom+=1
-            if event.key == pygame.K_MINUS:
-                if zoom > 1:
-                    zoom -= 1
+                center_x = camera_x + (world_center_x / (block_size * zoom))
+                center_y = (world_center_y / (block_size * zoom)) - camera_y
+
+                zoom += 1  
+
+                camera_x = center_x - (world_center_x / (block_size * zoom))
+                camera_y = (world_center_y / (block_size * zoom)) - center_y
+
+            if event.key == pygame.K_MINUS and zoom > 1:
+                center_x = camera_x + (world_center_x / (block_size * zoom))
+                center_y = (world_center_y / (block_size * zoom)) - camera_y
+
+                zoom -= 1
+
+                camera_x = center_x - (world_center_x / (block_size * zoom))
+                camera_y = (world_center_y / (block_size * zoom)) - center_y
 
             if event.key == pygame.K_r:
                 drawing = True
