@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
 
-# x and y cordinate pairs as tup and then just true, which idk if rudundant
+# x and y cordinate pairs as tup and then just true, which idk if rudundant could use sets
 aliveMap = {}
 drawing = True
 
@@ -53,7 +53,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
+#i used chatgpt for how to use keydown stuff
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 drawing = False
@@ -74,19 +74,11 @@ while True:
                 zoom -= 1
 
                 camera_x = center_x - (world_center_x / (block_size * zoom))
-                camera_y = (world_center_y / (block_size * zoom)) - center_y
+                camera_y = (world_center_y / (block_size * zoom)) - center_y #idkwhy center y is negative
 
             if event.key == pygame.K_r:
                 drawing = True
                 aliveMap = {}
-            if event.key == pygame.K_w:
-                camera_y += (1 * zoom)
-            if event.key == pygame.K_s:
-                camera_y -= (1 * zoom)
-            if event.key == pygame.K_a:
-                camera_x -= (1 * zoom)
-            if event.key == pygame.K_d:
-                camera_x += (1 * zoom)
 
                     
     if drawing == True:
@@ -156,7 +148,7 @@ while True:
 
     for x, y in aliveMap.keys():
             screen_x = (x - camera_x) *  block_size * zoom
-            screen_y = (y + camera_y) *  block_size* zoom
+            screen_y = (y + camera_y) *  block_size* zoom #idkwhytheyarenegativeandnotpostivebutthis works
 
             pygame.draw.rect(
                     screen,
@@ -167,6 +159,20 @@ while True:
     
     pygame.display.flip()
     #print(time.time() - starttime)
-    if drawing == False:
+    if drawing:
+        clock.tick(60) #used chat for these lines 1. to have the drawing smoother 2. to have a framerate for the animations
+    else:
         clock.tick(9)
+    keys = pygame.key.get_pressed()
+
+    move_speed = 1 
+
+    if keys[pygame.K_w]:#i used chatgpt for how event pressdown works 
+        camera_y += move_speed
+    if keys[pygame.K_s]:
+        camera_y -= move_speed
+    if keys[pygame.K_a]:
+        camera_x -= move_speed
+    if keys[pygame.K_d]:
+        camera_x += move_speed
 
