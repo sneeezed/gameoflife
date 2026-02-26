@@ -76,6 +76,9 @@ while True:
                 camera_x = center_x - (world_center_x / (block_size * zoom))
                 camera_y = (world_center_y / (block_size * zoom)) - center_y #idkwhy center y is negative
 
+            #there is a problem with the zooming in, where when you zoom in while drawing, the pixels don't align in the same cells with the
+            #pixels you drew before. I dont know why or how to fix. 
+
             if event.key == pygame.K_r:
                 drawing = True
                 aliveMap = {}
